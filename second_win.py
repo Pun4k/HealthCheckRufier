@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt,QTimer,QTime
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QLabel,
     QHBoxLayout, QVBoxLayout, QPushButton,
@@ -53,14 +53,33 @@ class TestWin(QWidget):
         self.l_line.addWidget(self.result3, alignment=Qt.AlignLeft)
         self.send_results = QPushButton("Отправить результаты")
         self.l_line.addWidget(self.send_results, alignment=Qt.AlignCenter)
-        self.timer = QLabel("00:00:15")
-        self.r_line.addWidget(self.timer, alignment=Qt.AlignCenter)
         self.h_line.addLayout(self.l_line)
         self.h_line.addLayout(self.r_line)
         self.setLayout(self.h_line)
 
+    def timer_test(self):
+        global time
+        time = QTime(0,1,0)
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.timer3Event)
+        self.timer.start(1000)
+
+    def timer1Event(self):
+        global time 
+        time = time.addSecs(-1)
+        self.text_timer.setText(time.toString("hh:mm:ss"))
+        self.text_timer.setFont("Times", 36, QFontBold)
+        self.text_timer.setStyleSheet("color: rgb(0, 0, 0)")
+        if time.toString("hh:mm:ss") == "00:00:00":
+            self.timer.stop()
+
+
+
+
     def connects(self):
+        self.start_button.clicked.connect(self.timer_test)
         self.send_results.clicked.connect(self.next_click)
+
 
     def next_click(self):
         self.hide()
